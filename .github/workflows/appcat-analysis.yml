@@ -395,33 +395,13 @@ jobs:
               const pageInfo = totalParts > 1 ? ` (Page ${i + 1}/${totalParts})` : '';
               const body = `${ASSESSMENT_SUMMARY_MARKER}${pageInfo}\n\n${chunks[i]}`;
               
-              if (existingComments[i]) {
-                await github.rest.issues.updateComment({
-                  owner,
-                  repo,
-                  comment_id: existingComments[i].id,
-                  body
-                });
-                console.log(`✅ Updated comment part ${i + 1}/${totalParts}`);
-              } else {
-                await github.rest.issues.createComment({
-                  owner,
-                  repo,
-                  issue_number: issueNumber,
-                  body
-                });
-                console.log(`✅ Created comment part ${i + 1}/${totalParts}`);
-              }
-            }
-            
-            // Clean up extra old comments
-            for (let i = totalParts; i < existingComments.length; i++) {
-              await github.rest.issues.deleteComment({
+              await github.rest.issues.createComment({
                 owner,
                 repo,
-                comment_id: existingComments[i].id
+                issue_number: issueNumber,
+                body
               });
-              console.log(`🗑️ Deleted extra comment ${i + 1}`);
+              console.log(`✅ Created comment part ${i + 1}/${totalParts}`);
             }
             
-            console.log(`✅ Successfully updated issue #${issueNumber} in ${owner}/${repo} with ${totalParts} comment(s)`);
+            console.log(`✅ Successfully posted ${totalParts} new comment(s) to issue #${issueNumber} in ${owner}/${repo}`);
