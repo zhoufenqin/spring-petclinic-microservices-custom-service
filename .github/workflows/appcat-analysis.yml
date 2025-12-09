@@ -1,0 +1,385 @@
+name: Application Assessment
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_url:
+        description: "GitHub issue URL to update with report (e.g., https://github.com/owner/repo/issues/8)"
+        required: false
+        default: "https://github.com/zhoufenqin/spring-petclinic-microservices/issues/8"
+        type: string
+
+env:
+  REPORT_PATH: ".github/workflows/report.json"
+
+jobs:
+  update-github-issue:
+    name: Update GitHub Issue with Assessment Report
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify Report File
+        run: |
+          REPORT_PATH="${{ env.REPORT_PATH }}"
+          echo "============== Verifying Report File =============="
+          echo "> Report path: $REPORT_PATH"
+          
+          if [ ! -f "$REPORT_PATH" ]; then
+            echo "❌ Report file not found at: $REPORT_PATH"
+            exit 1
+          fi
+          
+          echo "✅ Report file found!"
+          echo ""
+          echo "Preview of report:"
+          head -n 20 "$REPORT_PATH"
+
+      - name: Copy Report to Repository
+        run: |
+          REPORT_PATH="${{ env.REPORT_PATH }}"
+          ISSUE_URL="${{ github.event.inputs.issue_url || 'https://github.com/zhoufenqin/spring-petclinic-microservices/issues/8' }}"
+          
+          # Parse issue URL to extract owner and repo
+          if [[ "$ISSUE_URL" =~ github\.com/([^/]+)/([^/]+)/issues/([0-9]+) ]]; then
+            ISSUE_OWNER="${BASH_REMATCH[1]}"
+            ISSUE_REPO="${BASH_REMATCH[2]}"
+            echo "Target repository: $ISSUE_OWNER/$ISSUE_REPO"
+          else
+            echo "❌ Invalid issue URL format"
+            exit 1
+          fi
+          
+          CURRENT_REPO_NAME="${{ github.event.repository.name }}"
+          DEST_DIR="app-modernization"
+          DEST_FILE="${DEST_DIR}/${CURRENT_REPO_NAME}-report.json"
+          CLONE_DIR="target-repo"
+          
+          echo "============== Cloning Target Repository =============="
+          git clone "https://x-access-token:${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}@github.com/${ISSUE_OWNER}/${ISSUE_REPO}.git" "$CLONE_DIR"
+          cd "$CLONE_DIR"
+          
+          echo "============== Copying Report =============="
+          echo "> Source: ../$REPORT_PATH"
+          echo "> Destination: $DEST_FILE"
+          
+          mkdir -p "$DEST_DIR"
+          cp "../$REPORT_PATH" "$DEST_FILE"
+          
+          echo "✅ Report copied successfully!"
+
+      - name: Commit and Push Report
+        run: |
+          cd target-repo
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add app-modernization/
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update app modernization assessment report for ${{ github.event.repository.name }}"
+            git push
+            echo "✅ Report committed and pushed successfully!"
+          fi
+          
+          cd ..
+
+      - name: Update GitHub Issue with Report
+        uses: actions/github-script@v7
+        env:
+          ISSUE_URL: ${{ github.event.inputs.issue_url || 'https://github.com/zhoufenqin/spring-petclinic-microservices/issues/8' }}
+          REPORT_PATH: ${{ env.REPORT_PATH }}
+          ASSESSMENT_SUMMARY_MARKER: '<!--assessment-report-overview-->'
+        with:
+          github-token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Parse issue URL to extract owner, repo, and issue number
+            const issueUrl = process.env.ISSUE_URL;
+            const urlMatch = issueUrl.match(/github\.com\/([^\/]+)\/([^\/]+)\/issues\/(\d+)/);
+            
+            if (!urlMatch) {
+              console.log(`❌ Invalid issue URL format: ${issueUrl}`);
+              console.log('Expected format: https://github.com/owner/repo/issues/123');
+              return;
+            }
+            
+            const owner = urlMatch[1];
+            const repo = urlMatch[2];
+            const issueNumber = parseInt(urlMatch[3]);
+            
+            console.log(`📝 Adding new comment to issue: ${owner}/${repo}#${issueNumber}`);
+            
+            const ASSESSMENT_SUMMARY_MARKER = process.env.ASSESSMENT_SUMMARY_MARKER;
+            const MAX_COMMENT_LENGTH = 60000 * 4; // GitHub comment max size with buffer
+            
+            // Helper function to split content into chunks
+            function splitMarkdownContent(fullMarkdown, maxLength = MAX_COMMENT_LENGTH) {
+              const lines = fullMarkdown.split('\n');
+              const chunks = [];
+              let currentChunk = [];
+              let currentLength = 0;
+              
+              for (const line of lines) {
+                const lineLength = line.length + 1;
+                
+                if (currentLength + lineLength > maxLength && currentChunk.length > 0) {
+                  chunks.push(currentChunk.join('\n'));
+                  currentChunk = [];
+                  currentLength = 0;
+                }
+                
+                currentChunk.push(line);
+                currentLength += lineLength;
+              }
+              
+              if (currentChunk.length > 0) {
+                chunks.push(currentChunk.join('\n'));
+              }
+              
+              return chunks.length > 0 ? chunks : [fullMarkdown];
+            }
+            
+            // Helper function to generate summary content from report JSON
+            function generateSummaryContent(reportJson) {
+              const metadata = reportJson.metadata || {};
+              const targetDisplayNames = metadata.targetDisplayNames || [];
+              const targetIds = metadata.targetIds || [];
+              const rules = reportJson.rules || {};
+              
+              let summary = `# App Modernization Assessment Summary\n\n`;
+              summary += `**Repository:** \`${{ github.repository }}\`\n`;
+              summary += `**Branch:** \`${{ github.ref_name }}\`\n`;
+              summary += `**Workflow Run:** [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n`;
+              summary += `**Analysis Date:** ${new Date().toISOString()}\n\n`;
+              summary += `**Target Azure Services**: ${targetDisplayNames.join(', ')}\n\n`;
+              summary += `## Overall Statistics\n\n`;
+              
+              const azureTargets = ["azure-appservice", "azure-aks", "azure-container-apps"];
+              const filteredTargets = targetIds.filter(target => azureTargets.includes(target));
+              
+              // Group projects by appName
+              const projectsByApp = new Map();
+              const projectsWithoutAppName = [];
+              
+              for (const project of reportJson.projects) {
+                const appName = project.properties?.appName || '';
+                if (!appName) {
+                  projectsWithoutAppName.push(project);
+                  continue;
+                }
+                if (!projectsByApp.has(appName)) {
+                  projectsByApp.set(appName, []);
+                }
+                projectsByApp.get(appName).push(project);
+              }
+              
+              summary += `**Total Applications**: ${projectsByApp.size || 1}\n\n`;
+              
+              // Count severity by app and target
+              for (const [appName, projects] of projectsByApp.entries()) {
+                const ruleTargets = new Map();
+                
+                for (const project of projects) {
+                  for (const incident of project.incidents || []) {
+                    const incidentLabels = incident.labels || [];
+                    const hasViolationLabel = incidentLabels.some(label => 
+                      typeof label === 'string' && label === 'type=violation'
+                    );
+                    if (!hasViolationLabel) continue;
+                    
+                    const ruleId = incident.ruleId;
+                    if (!ruleTargets.has(ruleId)) {
+                      ruleTargets.set(ruleId, new Map());
+                    }
+                    
+                    const targets = incident.targets || {};
+                    for (const [targetId, targetInfo] of Object.entries(targets)) {
+                      if (filteredTargets.includes(targetId)) {
+                        const rule = rules[ruleId];
+                        ruleTargets.get(ruleId).set(targetId, {
+                          severity: targetInfo.severity || rule?.severity || 'information',
+                          effort: targetInfo.effort || rule?.effort || 0
+                        });
+                      }
+                    }
+                  }
+                }
+                
+                const targetSeverityCounts = new Map();
+                for (const targetId of filteredTargets) {
+                  targetSeverityCounts.set(targetId, { mandatory: 0, potential: 0, optional: 0 });
+                }
+                
+                for (const [ruleId, targets] of ruleTargets.entries()) {
+                  for (const [targetId, info] of targets.entries()) {
+                    const counts = targetSeverityCounts.get(targetId);
+                    if (info.severity === 'mandatory') counts.mandatory++;
+                    else if (info.severity === 'potential') counts.potential++;
+                    else if (info.severity === 'optional') counts.optional++;
+                  }
+                }
+                
+                summary += `**Name: ${appName}**\n`;
+                for (let i = 0; i < filteredTargets.length; i++) {
+                  const targetId = filteredTargets[i];
+                  const displayName = targetDisplayNames[i] || targetId;
+                  const counts = targetSeverityCounts.get(targetId);
+                  summary += `- ${displayName}: ${counts.mandatory} Mandatory, ${counts.potential} Potential, ${counts.optional} Optional\n`;
+                }
+                summary += `\n`;
+              }
+              
+              summary += `> **Severity Levels Explained:**\n`;
+              summary += `> - **Mandatory**: The issue has to be resolved for the migration to be successful.\n`;
+              summary += `> - **Potential**: This issue may be blocking in some situations but not in others. These issues should be reviewed to determine whether a change is required or not.\n`;
+              summary += `> - **Optional**: The issue discovered is real issue fixing which could improve the app after migration, however it is not blocking.\n\n`;
+              
+              // Add Applications Profile section
+              summary += `## Applications Profile\n\n`;
+              
+              for (const [appName, projects] of projectsByApp.entries()) {
+                const firstProject = projects[0];
+                const properties = firstProject.properties || {};
+                
+                summary += `### Name: ${appName}\n`;
+                summary += `- **JDK Version**: ${properties.jdkVersion || 'N/A'}\n`;
+                summary += `- **Frameworks**: ${properties.frameworks?.join(', ') || 'N/A'}\n`;
+                summary += `- **Languages**: ${properties.languages?.join(', ') || 'N/A'}\n`;
+                summary += `- **Build Tools**: ${properties.tools?.join(', ') || 'N/A'}\n\n`;
+                
+                const ruleData = new Map();
+                
+                for (const project of projects) {
+                  for (const incident of project.incidents || []) {
+                    const incidentLabels = incident.labels || [];
+                    const hasViolationLabel = incidentLabels.some(label => 
+                      typeof label === 'string' && label === 'type=violation'
+                    );
+                    if (!hasViolationLabel) continue;
+                    
+                    const ruleId = incident.ruleId;
+                    const rule = rules[ruleId];
+                    
+                    if (!ruleData.has(ruleId)) {
+                      const linksData = rule?.links || [];
+                      const links = linksData.map(link => 
+                        typeof link === 'string' ? link : link.url || ''
+                      ).filter(Boolean);
+                      
+                      ruleData.set(ruleId, {
+                        count: 0,
+                        targets: new Map(),
+                        links
+                      });
+                    }
+                    
+                    const data = ruleData.get(ruleId);
+                    data.count++;
+                    
+                    const targets = incident.targets || {};
+                    for (const [targetId, targetInfo] of Object.entries(targets)) {
+                      if (filteredTargets.includes(targetId) && !data.targets.has(targetId)) {
+                        data.targets.set(targetId, {
+                          severity: targetInfo.severity || rule?.severity || 'information',
+                          effort: targetInfo.effort || rule?.effort || 0
+                        });
+                      }
+                    }
+                  }
+                }
+                
+                summary += `**Key Findings**:\n\n`;
+                
+                for (const [ruleId, data] of ruleData.entries()) {
+                  const rule = rules[ruleId];
+                  const title = rule?.title || ruleId;
+                  
+                  summary += `- <details>\n`;
+                  summary += `  <summary><!--ruleid=${ruleId}--><b>${title}</b> (${data.count} location${data.count !== 1 ? 's' : ''})</summary>\n`;
+                  summary += `  \n`;
+                  
+                  for (let i = 0; i < filteredTargets.length; i++) {
+                    const targetId = filteredTargets[i];
+                    const displayName = targetDisplayNames[i] || targetId;
+                    const targetInfo = data.targets.get(targetId);
+                    if (targetInfo) {
+                      summary += `  - ${displayName}: ${targetInfo.severity}, Effort: ${targetInfo.effort}\n`;
+                    }
+                  }
+                  
+                  summary += `  </details>\n`;
+                  
+                  if (data.links.length > 0) {
+                    summary += `  \n`;
+                    summary += `  **Links**: ${data.links.join(', ')}\n`;
+                  }
+                  
+                  summary += `\n`;
+                }
+              }
+              
+              summary += `## Next Steps\n\n`;
+              summary += `For comprehensive migration guidance and best practices, visit:\n`;
+              summary += `- [GitHub Copilot App Modernization](https://aka.ms/ghcp-appmod)\n\n`;
+              summary += `### 📋 Report Information\n\n`;
+              summary += `- **Repository**: \`${{ github.repository }}\`\n`;
+              summary += `- **Report File**: \`${process.env.REPORT_PATH}\`\n`;
+              summary += `- **Workflow Run**: [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n`;
+              
+              return summary;
+            }
+            
+            // Read and parse report
+            let reportJson;
+            const reportPath = process.env.REPORT_PATH;
+            
+            try {
+              if (fs.existsSync(reportPath)) {
+                const reportContent = fs.readFileSync(reportPath, 'utf8');
+                reportJson = JSON.parse(reportContent);
+                console.log(`✅ Successfully read report from ${reportPath}`);
+              } else {
+                console.log(`❌ Report file not found at ${reportPath}`);
+                return;
+              }
+            } catch (error) {
+              console.log(`❌ Failed to read or parse report: ${error.message}`);
+              return;
+            }
+            
+            // Generate summary content
+            const summaryContent = generateSummaryContent(reportJson);
+            
+            // Split into chunks if needed
+            const chunks = splitMarkdownContent(summaryContent);
+            const totalParts = chunks.length;
+            
+            console.log(`📄 Generated ${totalParts} comment part(s)`);
+            
+            // Post each chunk as a new comment
+            for (let i = 0; i < totalParts; i++) {
+              const pageInfo = totalParts > 1 ? ` (Page ${i + 1}/${totalParts})` : '';
+              const body = `${ASSESSMENT_SUMMARY_MARKER}${pageInfo}\n\n${chunks[i]}`;
+              
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body
+              });
+              console.log(`✅ Created comment part ${i + 1}/${totalParts}`);
+            }
+            
+            console.log(`✅ Successfully added ${totalParts} new comment(s) to issue #${issueNumber} in ${owner}/${repo}`);
