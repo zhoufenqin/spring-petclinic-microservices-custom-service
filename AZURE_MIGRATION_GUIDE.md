@@ -158,9 +158,6 @@ spec:
         - name: http
           containerPort: 8081
           protocol: TCP
-        - name: management
-          containerPort: 8081
-          protocol: TCP
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "azure,production"
@@ -272,10 +269,6 @@ spec:
     targetPort: http
     protocol: TCP
     name: http
-  - port: 8081
-    targetPort: management
-    protocol: TCP
-    name: management
   selector:
     app: customers-service
 ```

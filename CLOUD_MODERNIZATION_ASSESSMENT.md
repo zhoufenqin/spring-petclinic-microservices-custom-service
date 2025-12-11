@@ -217,7 +217,7 @@ ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
 2. **Actuator endpoints exposed** - Secure sensitive endpoints
 3. **No rate limiting** - Implement API throttling
 4. **Secrets management** - Use Azure Key Vault
-5. **SQL injection protection** - JPA provides basic protection but validate input
+5. **Input validation** - While JPA with parameterized queries provides strong SQL injection protection, ensure all user inputs are validated
 
 ### 5.2 Recommended Security Enhancements
 
