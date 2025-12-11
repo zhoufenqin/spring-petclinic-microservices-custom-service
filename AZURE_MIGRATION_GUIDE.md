@@ -27,7 +27,7 @@ WORKDIR /app
 # Copy dependency files first for better caching
 COPY pom.xml .
 COPY .mvn .mvn
-RUN mvn dependency:go-offline -B
+RUN mvn dependency:resolve -B
 
 # Copy source and build
 COPY src ./src
@@ -94,6 +94,11 @@ target/
 
 ## 2. Kubernetes Manifests
 
+> **Note on Templating:** The manifests below use placeholder syntax `<VALUE>` for values that need to be replaced. In production, use one of these approaches:
+> - **Kustomize**: Use `kustomize edit set image` for image tags and overlays for environment-specific values
+> - **Helm**: Use Helm charts with values.yaml for templating
+> - **CI/CD**: Replace placeholders during pipeline execution using `envsubst` or similar tools
+
 ### 2.1 Directory Structure
 
 ```
@@ -145,7 +150,9 @@ spec:
       serviceAccountName: customers-service
       containers:
       - name: customers-service
-        image: ${ACR_NAME}.azurecr.io/customers-service:${VERSION}
+        # Note: Replace with actual values or use Kustomize/Helm for templating
+        # Example: myregistry.azurecr.io/customers-service:1.0.0
+        image: <ACR_NAME>.azurecr.io/customers-service:<VERSION>
         imagePullPolicy: Always
         ports:
         - name: http
@@ -373,12 +380,12 @@ kind: Ingress
 metadata:
   name: customers-service-ingress
   annotations:
-    kubernetes.io/ingress.class: azure/application-gateway
     appgw.ingress.kubernetes.io/ssl-redirect: "true"
     appgw.ingress.kubernetes.io/backend-protocol: "http"
     appgw.ingress.kubernetes.io/health-probe-path: "/actuator/health"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
+  ingressClassName: azure-application-gateway
   tls:
   - hosts:
     - api.petclinic.example.com
@@ -695,8 +702,10 @@ jobs:
     - name: Build and push Docker image
       run: |
         az acr login --name ${{ env.ACR_NAME }}
-        docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} .
-        docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        docker buildx build --push \
+          -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+          -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest \
+          --platform linux/amd64 .
     
     - name: Set AKS context
       uses: azure/aks-set-context@v3
