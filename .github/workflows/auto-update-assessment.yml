@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - 'copilot/assess-application-cloud-modernization'
-    paths:
-      - '.github/workflows/report.json'
   workflow_dispatch:
     inputs:
       issue_url:
