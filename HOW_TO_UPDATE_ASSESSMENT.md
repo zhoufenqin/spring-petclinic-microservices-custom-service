@@ -6,7 +6,7 @@ This guide explains how to trigger the GitHub Actions workflow that will update 
 ## Prerequisites
 ✅ Assessment report exists: `.github/workflows/report.json`  
 ✅ Workflow is configured: `.github/workflows/appcat-analysis.yml`  
-✅ Most recent workflow run was successful (Run #8, completed at 2025-12-16 08:14:56 UTC)
+✅ Previous workflow runs completed successfully
 
 ## Steps to Update the Assessment Report
 

@@ -89,7 +89,7 @@ The full assessment report is available at:
 
 ## Additional Resources
 - [GitHub Copilot App Modernization](https://aka.ms/ghcp-appmod)
-- AppCAT Privacy Mode: https://aka.ms/appcat-privacy-mode
+- [AppCAT Privacy Mode](https://aka.ms/appcat-privacy-mode)
 
 ---
 *Generated on: 2025-12-16*
