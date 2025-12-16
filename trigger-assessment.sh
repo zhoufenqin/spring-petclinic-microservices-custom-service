@@ -2,8 +2,9 @@
 
 # Script to trigger the Application Assessment workflow
 # This script requires GitHub CLI (gh) to be installed and authenticated
+# Minimum required version: gh 2.0.0
 
-set -e
+set -euo pipefail
 
 REPO="zhoufenqin/spring-petclinic-microservices-custom-service"
 WORKFLOW="appcat-analysis.yml"
@@ -40,12 +41,10 @@ echo "Triggering workflow..."
 echo ""
 
 # Trigger the workflow
-gh workflow run "$WORKFLOW" \
+if gh workflow run "$WORKFLOW" \
     --repo "$REPO" \
     --ref "$REF" \
-    --field issue_url="$ISSUE_URL"
-
-if [ $? -eq 0 ]; then
+    --field issue_url="$ISSUE_URL"; then
     echo ""
     echo "✅ Workflow triggered successfully!"
     echo ""
