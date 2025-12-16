@@ -6,7 +6,7 @@ This document provides the status of the cloud modernization assessment for the 
 ## Assessment Report
 - **Location**: `.github/workflows/report.json`
 - **Status**: ✅ Generated and up-to-date
-- **Last Updated**: December 11, 2025
+- **Last Updated**: December 11, 2024 (Analysis completed: 2024-12-11T11:31:54Z)
 
 ## Assessment Summary
 
@@ -23,10 +23,11 @@ Based on the existing assessment report, the application has been analyzed for c
 - **Total Effort**: 11,074
 
 ### Severity Distribution
-- **Mandatory**: 528 issues
-- **Potential**: 39 issues
-- **Optional**: 3,074 issues
-- **Information**: 57 issues
+The 3,698 total incidents are categorized by severity as follows:
+- **Mandatory**: 528 incidents (must be resolved for successful migration)
+- **Potential**: 39 incidents (may require attention depending on context)
+- **Optional**: 3,074 incidents (improvements that could be made)
+- **Information**: 57 incidents (informational findings)
 
 ### Issue Categories
 The assessment identified issues across multiple categories:
@@ -92,3 +93,4 @@ The full assessment report is available at:
 
 ---
 *Generated on: 2025-12-16*
+*Assessment data from: 2024-12-11*

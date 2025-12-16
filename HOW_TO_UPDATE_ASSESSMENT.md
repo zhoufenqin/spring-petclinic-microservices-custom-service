@@ -111,7 +111,7 @@ If the issue doesn't show the update:
 - **Workflow File**: `.github/workflows/appcat-analysis.yml`
 - **Report File**: `.github/workflows/report.json`
 - **GitHub Copilot App Modernization**: https://aka.ms/ghcp-appmod
-- **Recent Workflow Run**: https://github.com/zhoufenqin/spring-petclinic-microservices-custom-service/actions/runs/20261032338
+- **Workflow Runs**: View all workflow runs in the [Actions tab](https://github.com/zhoufenqin/spring-petclinic-microservices-custom-service/actions/workflows/appcat-analysis.yml)
 
 ## Support
 
