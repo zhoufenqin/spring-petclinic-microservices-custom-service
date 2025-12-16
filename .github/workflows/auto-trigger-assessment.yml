@@ -1,0 +1,34 @@
+name: Auto-trigger Assessment Workflow
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/report.json'
+  workflow_dispatch:
+
+jobs:
+  trigger-assessment:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    
+    steps:
+      - name: Trigger Application Assessment Workflow
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'appcat-analysis.yml',
+              ref: 'main',
+              inputs: {
+                issue_url: 'https://github.com/zhoufenqin/spring-petclinic-microservices/issues/8'
+              }
+            });
+            console.log('✅ Successfully triggered assessment workflow');
+            console.log(response);
