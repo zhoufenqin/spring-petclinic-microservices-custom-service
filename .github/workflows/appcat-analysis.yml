@@ -8,6 +8,12 @@ on:
         required: false
         default: "https://github.com/zhoufenqin/spring-petclinic-microservices/issues/8"
         type: string
+  push:
+    branches:
+      - main
+      - 'copilot/**'
+    paths:
+      - '.github/workflows/report.json'
 
 env:
   REPORT_PATH: ".github/workflows/report.json"
