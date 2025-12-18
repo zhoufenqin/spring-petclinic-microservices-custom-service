@@ -45,7 +45,11 @@ class OwnerResource {
     private final OwnerRepository ownerRepository;
 
     /**
-     * Create Owner
+     * Create a new owner.
+     * Validates the owner data and persists it to the database.
+     *
+     * @param owner the owner data to create
+     * @return the created owner with generated ID
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -54,7 +58,11 @@ class OwnerResource {
     }
 
     /**
-     * Read single Owner
+     * Retrieve a single owner by ID.
+     * Returns an Optional to allow the caller to handle the not-found case.
+     *
+     * @param ownerId the ID of the owner to retrieve (must be at least 1)
+     * @return an Optional containing the owner if found, empty otherwise
      */
     @GetMapping(value = "/{ownerId}")
     public Optional<Owner> findOwner(@PathVariable("ownerId") @Min(1) int ownerId) {
@@ -62,7 +70,10 @@ class OwnerResource {
     }
 
     /**
-     * Read List of Owners
+     * Retrieve all owners in the system.
+     * Returns the complete list of owners with their associated pets.
+     *
+     * @return list of all owners
      */
     @GetMapping
     public List<Owner> findAll() {
@@ -70,7 +81,14 @@ class OwnerResource {
     }
 
     /**
-     * Update Owner
+     * Update an existing owner's information.
+     * All fields in the owner request will overwrite the existing owner data.
+     * This uses a manual field-by-field update approach for simplicity.
+     * Note: In production, consider using MapStruct for automatic mapping.
+     *
+     * @param ownerId the ID of the owner to update
+     * @param ownerRequest the updated owner data
+     * @throws ResourceNotFoundException if the owner doesn't exist
      */
     @PutMapping(value = "/{ownerId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
