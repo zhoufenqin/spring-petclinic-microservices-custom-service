@@ -43,11 +43,26 @@ class PetResource {
     private final OwnerRepository ownerRepository;
 
 
+    /**
+     * Retrieve all available pet types.
+     * Used by clients to populate pet type selection options.
+     *
+     * @return list of all pet types
+     */
     @GetMapping("/petTypes")
     public List<PetType> getPetTypes() {
         return petRepository.findPetTypes();
     }
 
+    /**
+     * Create a new pet for an owner.
+     * The pet is automatically associated with the owner and saved to the database.
+     *
+     * @param petRequest the pet details to create
+     * @param ownerId the ID of the owner who will own this pet
+     * @return the created pet entity with generated ID
+     * @throws ResourceNotFoundException if the owner doesn't exist
+     */
     @PostMapping("/owners/{ownerId}/pets")
     @ResponseStatus(HttpStatus.CREATED)
     public Pet processCreationForm(
@@ -62,6 +77,13 @@ class PetResource {
         return save(pet, petRequest);
     }
 
+    /**
+     * Update an existing pet's information.
+     * Uses wildcard (*) in path to accept any owner ID for flexibility.
+     *
+     * @param petRequest the updated pet details including the pet ID
+     * @throws ResourceNotFoundException if the pet doesn't exist
+     */
     @PutMapping("/owners/*/pets/{petId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void processUpdateForm(@RequestBody PetRequest petRequest) {
@@ -70,6 +92,14 @@ class PetResource {
         save(pet, petRequest);
     }
 
+    /**
+     * Helper method to save or update a pet entity with data from a request.
+     * This method handles the mapping between PetRequest DTO and Pet entity.
+     *
+     * @param pet the pet entity to update
+     * @param petRequest the request containing updated pet information
+     * @return the saved pet entity
+     */
     private Pet save(final Pet pet, final PetRequest petRequest) {
 
         pet.setName(petRequest.getName());
@@ -82,18 +112,31 @@ class PetResource {
         return petRepository.save(pet);
     }
 
+    /**
+     * Retrieve details of a specific pet.
+     * Returns a DTO with formatted owner information.
+     *
+     * @param petId the ID of the pet to retrieve
+     * @return pet details including owner name
+     * @throws ResourceNotFoundException if the pet doesn't exist
+     */
     @GetMapping("owners/*/pets/{petId}")
     public PetDetails findPet(@PathVariable("petId") int petId) {
         return new PetDetails(findPetById(petId));
     }
 
 
+    /**
+     * Helper method to find a pet by ID.
+     * Uses modern Optional.orElseThrow() pattern for cleaner exception handling.
+     *
+     * @param petId the ID of the pet to find
+     * @return the pet entity
+     * @throws ResourceNotFoundException if the pet doesn't exist
+     */
     private Pet findPetById(int petId) {
-        Optional<Pet> pet = petRepository.findById(petId);
-        if (!pet.isPresent()) {
-            throw new ResourceNotFoundException("Pet "+petId+" not found");
-        }
-        return pet.get();
+        return petRepository.findById(petId)
+            .orElseThrow(() -> new ResourceNotFoundException("Pet "+petId+" not found"));
     }
 
 }
