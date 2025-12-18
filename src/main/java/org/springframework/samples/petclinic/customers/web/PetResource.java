@@ -89,11 +89,8 @@ class PetResource {
 
 
     private Pet findPetById(int petId) {
-        Optional<Pet> pet = petRepository.findById(petId);
-        if (!pet.isPresent()) {
-            throw new ResourceNotFoundException("Pet "+petId+" not found");
-        }
-        return pet.get();
+        return petRepository.findById(petId)
+            .orElseThrow(() -> new ResourceNotFoundException("Pet "+petId+" not found"));
     }
 
 }
