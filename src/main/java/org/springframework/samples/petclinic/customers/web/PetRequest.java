@@ -17,7 +17,7 @@ package org.springframework.samples.petclinic.customers.web;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.validation.constraints.Size;
 
@@ -31,7 +31,7 @@ class PetRequest {
     private int id;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Size(min = 1)
     private String name;

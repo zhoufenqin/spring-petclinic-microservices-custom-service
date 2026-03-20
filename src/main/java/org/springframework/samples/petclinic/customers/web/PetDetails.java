@@ -17,7 +17,7 @@ package org.springframework.samples.petclinic.customers.web;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.customers.model.Pet;
@@ -36,7 +36,7 @@ class PetDetails {
     private String owner;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     private PetType type;
 

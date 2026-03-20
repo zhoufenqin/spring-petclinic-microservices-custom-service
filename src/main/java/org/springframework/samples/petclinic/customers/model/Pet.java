@@ -15,7 +15,7 @@
  */
 package org.springframework.samples.petclinic.customers.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,8 +25,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -53,8 +51,7 @@ public class Pet {
     private String name;
 
     @Column(name = "birth_date")
-    @Temporal(TemporalType.DATE)
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @ManyToOne
     @JoinColumn(name = "type_id")
