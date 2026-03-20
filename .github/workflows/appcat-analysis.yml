@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       issue_url:
-        description: "GitHub issue URL to update with report (e.g., https://github.com/owner/repo/issues/8)"
+        description: "GitHub issue URL to update with report (e.g., https://github.com/owner/repo/issues/35)"
         required: false
-        default: "https://github.com/zhoufenqin/spring-petclinic-microservices/issues/8"
+        default: "https://github.com/zhoufenqin/spring-petclinic-microservices-custom-service/issues/35"
         type: string
 
 env:
-  REPORT_PATH: ".github/workflows/report.json"
+  REPORT_PATH: ".github/appmod/report.json"
 
 jobs:
   update-github-issue:
@@ -44,7 +44,7 @@ jobs:
       - name: Copy Report to Repository
         run: |
           REPORT_PATH="${{ env.REPORT_PATH }}"
-          ISSUE_URL="${{ github.event.inputs.issue_url || 'https://github.com/zhoufenqin/spring-petclinic-microservices/issues/8' }}"
+          ISSUE_URL="${{ github.event.inputs.issue_url || 'https://github.com/zhoufenqin/spring-petclinic-microservices-custom-service/issues/35' }}"
           
           # Parse issue URL to extract owner and repo
           if [[ "$ISSUE_URL" =~ github\.com/([^/]+)/([^/]+)/issues/([0-9]+) ]]; then
@@ -96,7 +96,7 @@ jobs:
       - name: Update GitHub Issue with Report
         uses: actions/github-script@v7
         env:
-          ISSUE_URL: ${{ github.event.inputs.issue_url || 'https://github.com/zhoufenqin/spring-petclinic-microservices/issues/8' }}
+          ISSUE_URL: ${{ github.event.inputs.issue_url || 'https://github.com/zhoufenqin/spring-petclinic-microservices-custom-service/issues/35' }}
           REPORT_PATH: ${{ env.REPORT_PATH }}
           ASSESSMENT_SUMMARY_MARKER: '<!--assessment-report-overview-->'
         with:
