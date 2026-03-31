@@ -1,0 +1,23 @@
+{
+  "input_name": "Environment Variables",
+  "analysis_method": "LLM",
+  "status": "success",
+  "result": {
+    "finding": "One environment variable is explicitly referenced in application.yml: CONFIG_SERVER_URL with a default of http://localhost:8888/. Additional runtime configuration (database credentials, datasource URL, Eureka server URL) is expected to be delivered by the Spring Cloud Config Server at startup and is not statically declared in this repository.",
+    "confidence": "medium",
+    "evidence": [
+      "application.yml: CONFIG_SERVER_URL used with default http://localhost:8888/",
+      "No Dockerfile ENV instructions found (Dockerfile in external parent directory)",
+      "No docker-compose.yml environment section found",
+      "No .env or .env.example files found",
+      "Additional configuration (DB, Eureka) sourced from Spring Cloud Config Server at runtime"
+    ],
+    "values": [
+      "CONFIG_SERVER_URL (runtime: Config Server URL, default: http://localhost:8888/)",
+      "Category: runtime / service discovery",
+      "Total explicitly declared: 1 environment variable"
+    ]
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

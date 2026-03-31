@@ -1,0 +1,17 @@
+{
+  "input_name": "Resource Limits",
+  "analysis_method": "LLM",
+  "status": "not_applicable",
+  "result": {
+    "finding": "No resource limit configurations found. No docker-compose.yml with deploy.resources sections and no Kubernetes manifests with resources.limits/requests are present in this repository.",
+    "confidence": "high",
+    "evidence": [
+      "No docker-compose.yml found to check deploy.resources section",
+      "No Kubernetes manifests found to check resources.limits/requests",
+      "No Helm chart values.yaml with resource configurations found"
+    ],
+    "values": []
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

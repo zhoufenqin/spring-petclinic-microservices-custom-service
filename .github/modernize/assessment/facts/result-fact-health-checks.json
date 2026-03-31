@@ -1,0 +1,24 @@
+{
+  "task_id": "025",
+  "input_name": "Health Checks",
+  "analysis_method": "Code",
+  "status": "success",
+  "result": {
+    "finding": "No explicit HEALTHCHECK instructions exist in Dockerfile/docker-compose/Kubernetes manifests, but the application includes spring-boot-starter-actuator which automatically exposes /actuator/health endpoint for liveness and readiness probing.",
+    "confidence": "medium",
+    "evidence": [
+      "No Dockerfile HEALTHCHECK instruction found",
+      "No docker-compose healthcheck section found",
+      "No Kubernetes livenessProbe/readinessProbe manifests found",
+      "pom.xml includes spring-boot-starter-actuator dependency which provides /actuator/health endpoint by default"
+    ],
+    "values": [
+      "Spring Boot Actuator health endpoint: /actuator/health",
+      "Check type: HTTP GET",
+      "No container-level health check timing configured"
+    ],
+    "script_output": { "health_checks": [] }
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:10:19Z"
+}

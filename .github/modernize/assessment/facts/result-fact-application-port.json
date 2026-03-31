@@ -1,0 +1,22 @@
+{
+  "input_name": "Application Port",
+  "analysis_method": "LLM",
+  "status": "success",
+  "result": {
+    "finding": "The application is configured to expose port 8081 for HTTP traffic. This is defined in pom.xml as docker.image.exposed.port. No explicit server.port is set in application.yml, meaning the port is likely configured via Spring Cloud Config Server at runtime. Port 8888 is also referenced as the Spring Cloud Config Server port.",
+    "confidence": "medium",
+    "evidence": [
+      "pom.xml property: docker.image.exposed.port=8081",
+      "No server.port found in src/main/resources/application.yml",
+      "application.yml references CONFIG_SERVER_URL default http://localhost:8888/ (Config Server port)",
+      "No Dockerfile EXPOSE instruction found (Dockerfile in external parent directory)"
+    ],
+    "values": [
+      "8081 (HTTP application port, from pom.xml docker property)",
+      "8888 (Spring Cloud Config Server port)",
+      "Protocol: HTTP"
+    ]
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

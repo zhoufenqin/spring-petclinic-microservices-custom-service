@@ -1,0 +1,31 @@
+{
+  "task_id": "014",
+  "input_name": "Runtime Environment",
+  "analysis_method": "Code",
+  "status": "success",
+  "result": {
+    "finding": "Java 17 with Spring Boot 3.4.1. The application is packaged as a Spring Boot fat JAR and runs on the JVM. Framework stack: Spring Boot 3.4.1, Spring Cloud 2024.0.0, Spring Data JPA.",
+    "confidence": "high",
+    "evidence": [
+      "pom.xml: <java.version>17</java.version>",
+      "pom.xml: spring-boot-starter-parent version 3.4.1 (requires Java 17+)",
+      "pom.xml: spring-cloud.version 2024.0.0 (Spring Cloud 2024 requires Java 17+)",
+      "pom.xml: <packaging>jar</packaging> - Spring Boot fat JAR deployment",
+      "No Dockerfile base image to confirm JRE variant"
+    ],
+    "values": [
+      "Java 17",
+      "Spring Boot 3.4.1",
+      "Spring Cloud 2024.0.0",
+      "Packaging: Spring Boot executable JAR",
+      "Variant: standard JDK 17"
+    ],
+    "script_output": {
+      "runtime": "Java",
+      "version": "17",
+      "variant": "standard"
+    }
+  },
+  "execution_time_seconds": 0,
+  "timestamp": "2026-03-31T06:16:33Z"
+}

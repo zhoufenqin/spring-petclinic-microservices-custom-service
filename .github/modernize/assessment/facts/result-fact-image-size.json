@@ -1,0 +1,23 @@
+{
+  "input_name": "Image Size",
+  "analysis_method": "LLM",
+  "status": "success",
+  "result": {
+    "finding": "No Dockerfile is present in this repository, so an actual image size cannot be measured. Based on the application stack (Spring Boot 3.4.1 fat JAR on Java 17), a typical container image would be estimated at 300-450MB: a standard eclipse-temurin:17-jre-alpine or similar JRE base (~180MB) plus the Spring Boot fat JAR (typically 80-150MB for a service with this many dependencies) plus layer overhead.",
+    "confidence": "low",
+    "evidence": [
+      "No Dockerfile found in repository; Dockerfile resides in external parent docker directory",
+      "Application source code is 196KB uncompiled",
+      "Spring Boot 3.4.1 fat JAR with Spring Cloud, Azure JDBC, Micrometer, and Chaos Monkey dependencies typically produces an 80-150MB artifact",
+      "Java 17 JRE base images (eclipse-temurin:17-jre-alpine) are approximately 180MB"
+    ],
+    "values": [
+      "Estimated total size: 300-450MB",
+      "Base JRE image (eclipse-temurin:17-jre-alpine): ~180MB",
+      "Spring Boot fat JAR application layer: ~80-150MB",
+      "Layer overhead: ~20-40MB"
+    ]
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

@@ -1,0 +1,22 @@
+{
+  "input_name": "Container Engine",
+  "analysis_method": "LLM",
+  "status": "success",
+  "result": {
+    "finding": "Docker is the container engine used, referenced via Spotify docker-maven-plugin in pom.xml build profile. No Dockerfile is present in this module; it references a parent-level docker directory. No docker-compose files or Podman/containerd indicators found.",
+    "confidence": "medium",
+    "evidence": [
+      "pom.xml: docker.image.exposed.port=8081, docker.image.dockerfile.dir=${basedir}/../docker",
+      "pom.xml: buildDocker profile uses com.spotify:docker-maven-plugin:1.2.0",
+      "No Dockerfile or docker-compose.yml found in the repository root",
+      ".github/workflows/appcat-analysis.yml references azure-container-apps as a deployment target"
+    ],
+    "values": [
+      "Docker",
+      "Spotify docker-maven-plugin v1.2.0",
+      "Docker build via Maven profile (buildDocker)"
+    ]
+  },
+  "execution_time_seconds": 2,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

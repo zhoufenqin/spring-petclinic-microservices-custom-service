@@ -1,0 +1,32 @@
+{
+  "input_name": "Architecture Pattern",
+  "analysis_method": "Hybrid",
+  "status": "success",
+  "result": {
+    "finding": "Microservices Architecture with Layered Internal Structure",
+    "confidence": "high",
+    "evidence": [
+      "CustomersServiceApplication.java is annotated with @SpringBootApplication and @EnableDiscoveryClient indicating a standalone deployable microservice",
+      "pom.xml includes spring-cloud-starter-netflix-eureka-client for service discovery registration",
+      "pom.xml includes spring-cloud-starter-config for centralized configuration (Config Server pattern)",
+      "Service name 'customers-service' and package structure (customers.*) indicate this is one of multiple microservices in the Spring PetClinic microservices project",
+      "Internal code follows Layered Architecture: web (controllers), model (entities/repositories), config (cross-cutting)"
+    ],
+    "values": [
+      "Microservices",
+      "Layered (internal)",
+      "Service Discovery (Netflix Eureka)",
+      "Centralized Config (Spring Cloud Config Server)"
+    ],
+    "architecture_details": {
+      "pattern": "Microservices",
+      "service_count": 1,
+      "has_service_discovery": true,
+      "has_api_gateway": false,
+      "has_message_broker": false,
+      "internal_pattern": "Layered (Controller-Repository-Entity)"
+    }
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

@@ -1,0 +1,24 @@
+{
+  "input_name": "Version Information",
+  "analysis_method": "LLM",
+  "status": "success",
+  "result": {
+    "finding": "Application version is 3.4.1, aligned with the Spring Boot parent version. This is a release version using semantic versioning.",
+    "confidence": "high",
+    "evidence": [
+      "pom.xml line 14: <version>3.4.1</version> (project artifact version)",
+      "pom.xml line 9: parent Spring Boot version 3.4.1 (version alignment)",
+      "No git tags found in repository",
+      "No version overrides in application.yml"
+    ],
+    "values": [
+      "3.4.1",
+      "Version type: release",
+      "Spring Boot parent: 3.4.1",
+      "Spring Cloud BOM: 2024.0.0",
+      "Spring Cloud Azure: 5.20.1"
+    ]
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

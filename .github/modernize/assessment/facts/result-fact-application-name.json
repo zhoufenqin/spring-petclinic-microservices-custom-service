@@ -1,0 +1,21 @@
+{
+  "input_name": "Application Name",
+  "analysis_method": "LLM",
+  "status": "success",
+  "result": {
+    "finding": "The application is named 'customers-service', consistently identified across pom.xml (name and artifactId) and application.yml (spring.application.name).",
+    "confidence": "high",
+    "evidence": [
+      "pom.xml <name>Spring PetClinic Customers Service</name>",
+      "pom.xml <artifactId>customers-service</artifactId>",
+      "src/main/resources/application.yml: spring.application.name=customers-service"
+    ],
+    "values": [
+      "customers-service",
+      "Spring PetClinic Customers Service",
+      "groupId: org.springframework.samples.petclinic.client"
+    ]
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

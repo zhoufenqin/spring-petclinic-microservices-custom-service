@@ -1,0 +1,18 @@
+{
+  "input_name": "Service Definition",
+  "analysis_method": "LLM",
+  "status": "not_applicable",
+  "result": {
+    "finding": "No service definition files found in this repository. There are no docker-compose.yml, Kubernetes manifests, or Helm charts present. The service configuration is expected to come from the Spring Cloud Config Server at runtime.",
+    "confidence": "high",
+    "evidence": [
+      "No docker-compose*.yml files found",
+      "No k8s/ or manifests/ directories found",
+      "No Chart.yaml or values.yaml (Helm) found",
+      "No Kubernetes resource YAML files found"
+    ],
+    "values": []
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

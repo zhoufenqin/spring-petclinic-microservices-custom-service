@@ -1,0 +1,19 @@
+{
+  "input_name": "Orchestration Tool",
+  "analysis_method": "LLM",
+  "status": "not_applicable",
+  "result": {
+    "finding": "No container orchestration configuration found in this repository. No docker-compose.yml, Kubernetes manifests, or Helm charts exist. The CI/CD workflow (appcat-analysis.yml) references Azure AKS and Azure Container Apps as potential deployment targets, but no orchestration manifests have been created yet.",
+    "confidence": "high",
+    "evidence": [
+      "No docker-compose*.yml files found",
+      "No k8s/ or manifests/ directory found",
+      "No Kubernetes YAML manifests found",
+      "No Helm charts found",
+      ".github/workflows/appcat-analysis.yml mentions azure-aks and azure-container-apps as assessment targets only"
+    ],
+    "values": []
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}
