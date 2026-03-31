@@ -1,0 +1,26 @@
+{
+  "input_name": "Profile Settings",
+  "analysis_method": "LLM",
+  "status": "success",
+  "result": {
+    "finding": "Application uses Spring profiles with 2 environments: 'docker' (inline in application.yml via on-profile) and 'test' (application-test.yml in src/test/resources). A Maven 'buildDocker' build profile is also defined for Docker image building.",
+    "confidence": "high",
+    "evidence": [
+      "src/main/resources/application.yml: docker profile defined inline using 'spring.config.activate.on-profile: docker' - switches Config Server URL to http://config-server:8888",
+      "src/test/resources/application-test.yml: test profile disables Spring Cloud Config (cloud.config.enabled=false), uses HSQLDB in-memory schema, disables Eureka client",
+      "pom.xml: Maven 'buildDocker' profile activates com.spotify:docker-maven-plugin for Docker image builds",
+      "No application-dev.yml, application-staging.yml, or application-prod.yml found",
+      "Runtime profiles (beyond docker) likely managed by external Spring Cloud Config Server"
+    ],
+    "values": [
+      "Spring runtime profiles: docker, test",
+      "Maven build profiles: buildDocker",
+      "docker profile: uses Config Server at http://config-server:8888",
+      "test profile: HSQLDB in-memory DB, no Config Server, no Eureka",
+      "Config file types: YAML",
+      "Additional environment config delivered via Spring Cloud Config Server at runtime"
+    ]
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

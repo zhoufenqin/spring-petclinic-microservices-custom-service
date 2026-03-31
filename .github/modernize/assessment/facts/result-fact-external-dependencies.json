@@ -1,0 +1,27 @@
+{
+  "input_name": "External Dependencies",
+  "analysis_method": "LLM",
+  "status": "success",
+  "result": {
+    "finding": "The application has four external dependencies: MySQL (Azure-managed via spring-cloud-azure-starter-jdbc-mysql), HSQLDB (in-memory testing), Spring Cloud Config Server, and Netflix Eureka service registry. Connection configuration is delivered at runtime via the Config Server.",
+    "confidence": "medium",
+    "evidence": [
+      "pom.xml: com.mysql:mysql-connector-j (runtime) - MySQL JDBC driver",
+      "pom.xml: com.azure.spring:spring-cloud-azure-starter-jdbc-mysql:5.20.1 - Azure MySQL managed identity support",
+      "pom.xml: org.hsqldb:hsqldb (runtime) - embedded in-memory database for testing profile",
+      "pom.xml: spring-cloud-starter-netflix-eureka-client - Eureka service registry dependency",
+      "pom.xml: spring-cloud-starter-config - Spring Cloud Config Server client",
+      "application.yml: CONFIG_SERVER_URL env var with default http://localhost:8888/",
+      "application.yml (docker profile): configserver:http://config-server:8888"
+    ],
+    "values": [
+      "MySQL - Purpose: primary relational database, Azure-managed",
+      "HSQLDB - Purpose: in-memory database for local/test profile",
+      "Spring Cloud Config Server - Purpose: centralized configuration management",
+      "Netflix Eureka - Purpose: service discovery and registration",
+      "Count: 4 external dependencies"
+    ]
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

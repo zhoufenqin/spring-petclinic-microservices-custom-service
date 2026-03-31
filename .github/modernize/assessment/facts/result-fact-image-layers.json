@@ -1,0 +1,16 @@
+{
+  "input_name": "Image Layers",
+  "analysis_method": "LLM",
+  "status": "not_applicable",
+  "result": {
+    "finding": "No Dockerfile or Containerfile found in this repository. The pom.xml references a Dockerfile in an external parent docker directory (${basedir}/../docker) which is not available here. Layer analysis cannot be performed.",
+    "confidence": "high",
+    "evidence": [
+      "No Dockerfile or Containerfile found via glob search in repository",
+      "pom.xml property docker.image.dockerfile.dir=${basedir}/../docker points to external directory not present in this repo"
+    ],
+    "values": []
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

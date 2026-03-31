@@ -1,0 +1,32 @@
+{
+  "task_id": "019",
+  "input_name": "External Services",
+  "analysis_method": "Code",
+  "status": "success",
+  "result": {
+    "finding": "MySQL (via Azure JDBC), Spring Cloud Config Server, and Netflix Eureka are the external services this application depends on. HSQLDB is included as an in-memory fallback for testing.",
+    "confidence": "medium",
+    "evidence": [
+      "pom.xml: mysql-connector-j runtime dependency - MySQL database driver",
+      "pom.xml: spring-cloud-azure-starter-jdbc-mysql - Azure-managed MySQL connection",
+      "pom.xml: hsqldb runtime dependency - in-memory database for testing",
+      "pom.xml: spring-cloud-starter-netflix-eureka-client - Eureka service registry",
+      "pom.xml: spring-cloud-starter-config - Spring Cloud Config Server",
+      "application.yml: CONFIG_SERVER_URL (default: http://localhost:8888/) - Config Server endpoint",
+      "application.yml (docker profile): config-server:8888 - Config Server in Docker mode"
+    ],
+    "values": [
+      "MySQL (Azure-managed via spring-cloud-azure-starter-jdbc-mysql)",
+      "HSQLDB (in-memory, testing only)",
+      "Spring Cloud Config Server (configuration management)",
+      "Netflix Eureka (service discovery)",
+      "Count: 4 external services"
+    ],
+    "script_output": {
+      "services": ["MySQL", "HSQLDB", "Spring Cloud Config Server", "Netflix Eureka"],
+      "count": 4
+    }
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:12:31Z"
+}

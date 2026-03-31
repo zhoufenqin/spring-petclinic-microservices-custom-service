@@ -1,0 +1,34 @@
+{
+  "input_name": "Startup Instrumentation",
+  "analysis_method": "Hybrid",
+  "status": "success",
+  "result": {
+    "finding": "Logback for logging, Micrometer with AOP-based @Timed metrics, and Prometheus metrics export. Jolokia JMX bridge is also configured for runtime log-level management.",
+    "confidence": "high",
+    "evidence": [
+      "logback-spring.xml: Logback logging with Spring Boot base configuration and <jmxConfigurator/> for Jolokia JMX log-level management",
+      "MetricConfig.java: Registers TimedAspect bean to enable AOP-based @Timed metrics collection via MeterRegistry",
+      "OwnerResource.java: @Timed('petclinic.owner') on controller class - all owner endpoints measured",
+      "PetResource.java: @Timed('petclinic.pet') on controller class - all pet endpoints measured",
+      "pom.xml: micrometer-registry-prometheus - Prometheus metrics endpoint via Spring Boot Actuator",
+      "pom.xml: jolokia-core 1.7.1 - JMX-HTTP bridge for runtime monitoring"
+    ],
+    "values": [
+      "Logback (with Spring Boot base config)",
+      "Micrometer (AOP-based @Timed annotations on controllers)",
+      "Prometheus metrics export (micrometer-registry-prometheus)",
+      "Jolokia 1.7.1 (JMX-HTTP bridge for runtime log-level management)",
+      "Spring Boot Actuator (health, info, metrics endpoints)"
+    ],
+    "instrumentation_details": {
+      "logging_framework": "Logback",
+      "logging_config": "logback-spring.xml",
+      "telemetry_provider": "Micrometer + Prometheus",
+      "aop_framework": "Micrometer TimedAspect (Spring AOP)",
+      "jmx_bridge": "Jolokia 1.7.1",
+      "timed_components": ["OwnerResource (petclinic.owner)", "PetResource (petclinic.pet)"]
+    }
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

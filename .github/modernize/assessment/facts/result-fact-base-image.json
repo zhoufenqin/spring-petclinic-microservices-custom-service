@@ -1,0 +1,18 @@
+{
+  "input_name": "Base Image",
+  "analysis_method": "LLM",
+  "status": "not_applicable",
+  "result": {
+    "finding": "No Dockerfile or Containerfile found in this repository. The pom.xml references a Dockerfile located in a parent-level docker directory (${basedir}/../docker) which is not present in this repository. Base image cannot be determined from available files.",
+    "confidence": "high",
+    "evidence": [
+      "No Dockerfile or Containerfile found via glob search",
+      "pom.xml property docker.image.dockerfile.dir=${basedir}/../docker points to external directory",
+      "No docker-compose.yml found",
+      "No Kubernetes manifests found"
+    ],
+    "values": []
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

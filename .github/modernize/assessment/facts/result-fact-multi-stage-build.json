@@ -1,0 +1,18 @@
+{
+  "task_id": "013",
+  "input_name": "Multi-stage Build",
+  "analysis_method": "Code",
+  "status": "not_applicable",
+  "result": {
+    "finding": "No Dockerfile found",
+    "confidence": "high",
+    "evidence": [],
+    "values": [],
+    "script_output": {
+      "dockerfiles_found": 0,
+      "multi_stage_builds": 0
+    }
+  },
+  "execution_time_seconds": 0,
+  "timestamp": "2026-03-31T06:08:33Z"
+}

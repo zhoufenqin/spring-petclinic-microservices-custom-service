@@ -1,0 +1,26 @@
+{
+  "input_name": "XML Configs",
+  "analysis_method": "LLM",
+  "status": "success",
+  "result": {
+    "finding": "Minimal XML configuration - only one XML file present: logback-spring.xml for logging, plus pom.xml for build. The application uses modern Spring Boot annotation-based configuration exclusively with no Spring XML context files, Hibernate XML mappings, or web.xml.",
+    "confidence": "high",
+    "evidence": [
+      "logback-spring.xml at src/main/resources/: Logback logging config with Spring Boot base config include and JMX configurator for Jolokia log-level management",
+      "pom.xml: Maven build descriptor (not an application config file)",
+      "No applicationContext.xml, spring-*.xml, or *-context.xml files found",
+      "No hibernate.cfg.xml or *.hbm.xml files found",
+      "No web.xml or persistence.xml found",
+      "No MyBatis mapper XML files found",
+      "Spring Boot annotation-based config: @SpringBootApplication, @RestController, @Entity, @Repository"
+    ],
+    "values": [
+      "Logging: logback-spring.xml (Logback with JMX support for runtime log-level management)",
+      "Build: pom.xml (Maven)",
+      "Total application XML config files: 1 (logback-spring.xml)",
+      "Framework config approach: annotation-based (@SpringBootApplication, @Configuration)"
+    ]
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

@@ -1,0 +1,24 @@
+{
+  "input_name": "Communication Protocols",
+  "analysis_method": "LLM",
+  "status": "success",
+  "result": {
+    "finding": "The application exposes HTTP/REST APIs via Spring MVC annotations. It also integrates with Spring Cloud Config Server and Eureka Discovery Server over HTTP. No gRPC, WebSocket, Kafka, RabbitMQ, or other messaging protocols are used.",
+    "confidence": "high",
+    "evidence": [
+      "OwnerResource.java: @RestController, @RequestMapping('/owners'), @GetMapping, @PostMapping, @PutMapping",
+      "PetResource.java: @RestController, @GetMapping('/petTypes'), @PostMapping('/owners/{ownerId}/pets'), @PutMapping, @GetMapping",
+      "pom.xml: spring-cloud-starter-config (HTTP to Config Server)",
+      "pom.xml: spring-cloud-starter-netflix-eureka-client (HTTP service discovery)",
+      "No Kafka, RabbitMQ, gRPC, WebSocket, or JMS dependencies found in pom.xml"
+    ],
+    "values": [
+      "HTTP/REST (Spring MVC - primary API protocol)",
+      "HTTP (Spring Cloud Config Server - configuration fetch)",
+      "HTTP (Netflix Eureka - service registration and discovery)",
+      "REST endpoints: GET/POST/PUT /owners, GET/PUT /owners/*/pets, GET /petTypes"
+    ]
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

@@ -1,0 +1,26 @@
+{
+  "input_name": "Data Classification",
+  "analysis_method": "Code",
+  "status": "success",
+  "result": {
+    "finding": "PII (Personally Identifiable Information) - The application stores pet owner personal data including full name, address, city, and telephone number in the MySQL database.",
+    "confidence": "high",
+    "evidence": [
+      "db/mysql/schema.sql: owners table contains first_name, last_name, address, city, telephone (PII fields)",
+      "db/hsqldb/schema.sql: same owners table structure with PII fields",
+      "Owner.java JPA entity: firstName, lastName, address, city, telephone mapped from database",
+      "No data classification policy documented",
+      "No encryption applied to PII fields at rest",
+      "No anonymization or pseudonymization implemented"
+    ],
+    "values": [
+      "PII - Owner personal data: first_name, last_name, address, city, telephone",
+      "Internal - Pet data: name, birth_date, type (non-sensitive)",
+      "Public - Pet types (lookup data: Cat, Dog, Bird, etc.)",
+      "Classification: PII for owner records, Internal/Public for pet data"
+    ],
+    "script_output": { "classifications": ["PII"] }
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:14:26Z"
+}

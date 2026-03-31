@@ -1,0 +1,17 @@
+{
+  "input_name": "System Packages",
+  "analysis_method": "LLM",
+  "status": "not_applicable",
+  "result": {
+    "finding": "No Dockerfile found in this repository. System package analysis cannot be performed. The Dockerfile is located in an external parent docker directory not present in this repository.",
+    "confidence": "high",
+    "evidence": [
+      "No Dockerfile or Containerfile found in repository",
+      "pom.xml references docker.image.dockerfile.dir=${basedir}/../docker (external directory)",
+      "No RUN apt-get install, apk add, or yum install commands found"
+    ],
+    "values": []
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

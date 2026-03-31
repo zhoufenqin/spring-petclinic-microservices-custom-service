@@ -1,0 +1,23 @@
+{
+  "input_name": "Language Dependencies",
+  "analysis_method": "LLM",
+  "status": "success",
+  "result": {
+    "finding": "Java Maven project with pom.xml declaring 14 runtime/compile dependencies and 4 test-scoped dependencies. Dependencies are managed via Maven with Spring Boot BOM (3.4.1), Spring Cloud BOM (2024.0.0), and Spring Cloud Azure BOM (5.20.1).",
+    "confidence": "high",
+    "evidence": [
+      "pom.xml found at repository root with complete dependency declarations",
+      "No Dockerfile COPY/RUN mvn commands found (build not containerized in this repo)",
+      "Build tool: Apache Maven (spring-boot-maven-plugin configured)"
+    ],
+    "values": [
+      "Dependency file: pom.xml",
+      "Runtime/compile dependencies: 14",
+      "Test dependencies: 4",
+      "Key dependencies: spring-boot-starter-web, spring-boot-starter-data-jpa, spring-cloud-starter-netflix-eureka-client, spring-cloud-starter-config, spring-cloud-azure-starter-jdbc-mysql, micrometer-registry-prometheus, jolokia-core, chaos-monkey-spring-boot, lombok, mysql-connector-j, hsqldb",
+      "Version governance: spring-boot-starter-parent 3.4.1, spring-cloud-dependencies 2024.0.0, spring-cloud-azure-dependencies 5.20.1"
+    ]
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}

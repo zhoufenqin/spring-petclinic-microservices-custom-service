@@ -1,0 +1,27 @@
+{
+  "input_name": "Servlet Container",
+  "analysis_method": "LLM",
+  "status": "success",
+  "result": {
+    "finding": "Spring Boot 3.4.1 application with embedded Apache Tomcat 10.1.x (Servlet 6.0 / Jakarta EE 10), packaged as a self-contained executable JAR. No external container deployment is required.",
+    "confidence": "high",
+    "evidence": [
+      "pom.xml: <packaging>jar</packaging> - Spring Boot executable JAR with embedded container",
+      "pom.xml: spring-boot-starter-web dependency includes embedded Tomcat 10.1.x",
+      "pom.xml: spring-boot-starter-parent version 3.4.1 - Spring Boot 3.x requires Jakarta EE 10 (Servlet 6.0)",
+      "No web.xml found - uses annotation-based Spring MVC configuration",
+      "No WEB-INF directory - not a WAR deployment",
+      "No container-specific files (weblogic.xml, jboss-web.xml) found",
+      "No @WebServlet or HttpServlet implementations - uses Spring MVC @RestController"
+    ],
+    "values": [
+      "Servlet API: Jakarta Servlet 6.0 (Jakarta EE 10)",
+      "Container: Apache Tomcat 10.1.x (embedded via spring-boot-starter-web)",
+      "Deployment model: Self-contained executable JAR (no external container needed)",
+      "Servlets: 0 custom servlets (Spring DispatcherServlet configured automatically)",
+      "Packaging: JAR"
+    ]
+  },
+  "execution_time_seconds": 1,
+  "timestamp": "2026-03-31T06:03:09.028Z"
+}
